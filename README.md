@@ -1,28 +1,13 @@
-Heroku buildpack: linuxbrew
-=======================
+Heroku Buildpack Brewfile
+=========================
 
-You can install any packages by using [linuxbrew](https://github.com/Homebrew/linuxbrew).
+Install packages with [Homebrew](https://github.com/Homebrew/brew)'s Brewfile.
 
 Usage
 -----
-To use this buildpack, you should prepare a .buildpacks file that contains this buildpack url and your real buildpack url:
 
-    $ ls
-    .cellar
-    .buildpacks
-    ...
+Add your dependencies to Brewfile and run `brew bundle` to install and lock dependencies. Be sure to commit Brewfile.lock.json, as that's what is used to detect that this buildpack should be used.
 
-    $ cat .cellar
-    mecab
-    mecab-ipadic
-    
-    $ cat .buildpacks
-    https://github.com/sunny4381/heroku-buildpack-linuxbrew.git
-
-    $ heroku create --buildpack https://github.com/heroku/heroku-buildpack-multi
-    $ heroku config:add LD_LIBRARY_PATH=/app/.linuxbrew/lib
-    $ git push heroku master
-    ...
 
 License
 ----

@@ -2,10 +2,9 @@
 
 BUILD_DIR=$1
 
-if [ -f "$BUILD_DIR/.cellar" ]; then
-  echo "linuxbrew"
+if [ -f "$BUILD_DIR/Brewfile.lock.json" ]; then
+  echo "Homebrew Brewfile"
   exit 0
 else
-  echo "no"
   exit 1
 fi

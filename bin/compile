@@ -6,7 +6,6 @@ indent() {
 
 echo "-----> Installing linuxbrew"
 BUILD_DIR=$1
-VENDOR_DIR="vendor"
 
 git clone --depth 1 "https://github.com/Homebrew/brew.git" \
   "$HOME/.linuxbrew" 2>&1 | indent
@@ -20,30 +19,18 @@ cat << _EOT_ > $PROFILE_PATH
 export PATH="\$HOME/.linuxbrew/bin:\$PATH"
 export MANPATH="\$HOME/.linuxbrew/share/man:\$MANPATH"
 export INFOPATH="\$HOME/.linuxbrew/share/info:\$INFOPATH"
-export LD_LIBRARY_PATH="\$HOME/.linuxbrew/lib:\$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="\$HOME/.linuxbrew/lib:/app/.linuxbrew/lib"
 _EOT_
 
 . $PROFILE_PATH
 cat $PROFILE_PATH | indent
 
 # install
-for formula in $(cat "$BUILD_DIR/.cellar")
-do
-  echo "-----> Installing $formula using brew"
-  brew install $formula | indent
-  if [ $? -ne 0 ]; then
-    rm "$HOME/$VENDOR_DIR/linuxbrew"
-    exit 1
-  fi
-  df
-  echo "-----> cleanup $formula using brew"
-  brew cleanup
-done
+echo "-----> Running brew bundle install"
+brew bundle install --cleanup --verbose --no-upgrade
 
-echo "-----> Delete git objects because it is too large"
-du -sh /app/.linuxbrew/Library/Taps/homebrew/homebrew-core/
+# Delete git objects because it is too large
 rm -rf /app/.linuxbrew/Library/Taps/homebrew/homebrew-core/.git
-du -sh /app/.linuxbrew/Library/Taps/homebrew/homebrew-core/
 
 # save '.linuxbrew'
 (cd $HOME && tar cf - .linuxbrew) | (cd $BUILD_DIR && tar xf -)
